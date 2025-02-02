@@ -1,0 +1,5 @@
+PyQt6
+geopandas==1.0.1
+pandas
+pyogrio
+matplotlib
