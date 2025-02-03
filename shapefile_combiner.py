@@ -46,6 +46,8 @@ class MainWindow(wdg.QDialog):
         self.combineFiles: wdg.QPushButton
         self.browseDestinationFolder: wdg.QPushButton
         self.crsHelp: wdg.QPushButton
+        self.previewButton: wdg.QPushButton
+
 
         # labels
         self.destinationLabel: wdg.QLabel
@@ -69,6 +71,7 @@ class MainWindow(wdg.QDialog):
         self.browseDestinationFolder.clicked.connect(self.browseDestinationFolderCallback)
         self.crsHelp.clicked.connect(self.crsHelpCallback)
         self.combineFiles.clicked.connect(self.combineFilesCallback)
+        self.previewButton.clicked.connect(self.previewCallback)
 
 
     def addFilesCallback(self):
@@ -97,18 +100,39 @@ class MainWindow(wdg.QDialog):
 
 
     def combineFilesCallback(self):
-        filenames = [self.shapefileList.item(x).text() for x in range(self.shapefileList.count())]
+        combined_shapefile = self.previewCallback(True)
+
+        # filenames = [self.shapefileList.item(x).text() for x in range(self.shapefileList.count())]
+        filenames = [item.text() for item in self.shapefileList.selectedItems()]
+        shapefiles = [gpd.read_file(filename) for filename in filenames]
+
+        if shapefiles == []:
+            return
+
+        if not os.path.exists(f'{self.destinationLineEdit.text()}/Result'):
+            os.makedirs(f'{self.destinationLineEdit.text()}/Result')
+
+        combined_shapefile.to_file(f"{self.destinationLineEdit.text()}/Result/output.shp", mode='w')
+
+        self.progressBar.setValue(100)
+
+        self.doneLabel.setText(f"Success! Results created at {self.destinationLineEdit.text()}/Result")
+
+
+    def previewCallback(self, output=False):
+        # filenames = [self.shapefileList.item(x).text() for x in range(self.shapefileList.count())]
+        filenames = [item.text() for item in self.shapefileList.selectedItems()]
         shapefiles = [gpd.read_file(filename) for filename in filenames]
 
         if shapefiles == []:
             return
         
-        self.progressBar.setValue(20)
+        if output: self.progressBar.setValue(20)
 
         crs = self.crsFormatLine.text()
         print(crs)
 
-        self.progressBar.setValue(40)
+        if output: self.progressBar.setValue(40)
 
         if crs == '':
             return
@@ -120,24 +144,16 @@ class MainWindow(wdg.QDialog):
             else:
                 shapefile.to_crs(crs, inplace=True)
 
-        self.progressBar.setValue(60)
+        if output: self.progressBar.setValue(60)
 
         combined_shapefile = pd.concat(shapefiles)
 
-        self.progressBar.setValue(80)
-
-
-        if not os.path.exists(f'{self.destinationLineEdit.text()}/Result'):
-            os.makedirs(f'{self.destinationLineEdit.text()}/Result')
-
-        combined_shapefile.to_file(f"{self.destinationLineEdit.text()}/Result/output.shp", mode='w')
-
-        self.progressBar.setValue(100)
-
-        self.doneLabel.setText(f"Success! Results created at {self.destinationLineEdit.text()}/Result")
+        if output: self.progressBar.setValue(80)
 
         sc = MplCanvas()
         combined_shapefile.plot(ax=sc.axes, color='None', edgecolor='Black')
+
+        # breakout plot
         self.popup = wdg.QWidget()
         self.popup.setMinimumWidth(500)
         self.popup.setMinimumHeight(500)
@@ -145,8 +161,8 @@ class MainWindow(wdg.QDialog):
         self.layout = wdg.QVBoxLayout(self.popup)
         self.layout.addWidget(sc)
         self.popup.show()
-        # combined_shapefile.plot(color='None', edgecolor='black')
-        # plt.show()
+
+        return combined_shapefile
 
 
 if __name__ == "__main__":

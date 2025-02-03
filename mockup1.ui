@@ -25,7 +25,7 @@
      <x>20</x>
      <y>10</y>
      <width>501</width>
-     <height>601</height>
+     <height>591</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="shapefileElement">
@@ -80,10 +80,13 @@
         <item>
          <widget class="QLabel" name="destinationLabel">
           <property name="text">
-           <string>Desination folder: </string>
+           <string>Destination: </string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::AutoText</enum>
           </property>
           <property name="alignment">
-           <set>Qt::AlignCenter</set>
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -137,6 +140,19 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="previewButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Preview</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="combineFiles">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -175,6 +191,12 @@
        <widget class="QLabel" name="doneLabel">
         <property name="text">
          <string/>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
