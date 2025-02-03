@@ -102,7 +102,6 @@ class MainWindow(wdg.QDialog):
     def combineFilesCallback(self):
         combined_shapefile = self.previewCallback(True)
 
-        # filenames = [self.shapefileList.item(x).text() for x in range(self.shapefileList.count())]
         filenames = [item.text() for item in self.shapefileList.selectedItems()]
         shapefiles = [gpd.read_file(filename) for filename in filenames]
 
@@ -120,7 +119,6 @@ class MainWindow(wdg.QDialog):
 
 
     def previewCallback(self, output=False):
-        # filenames = [self.shapefileList.item(x).text() for x in range(self.shapefileList.count())]
         filenames = [item.text() for item in self.shapefileList.selectedItems()]
         shapefiles = [gpd.read_file(filename) for filename in filenames]
 
@@ -130,7 +128,6 @@ class MainWindow(wdg.QDialog):
         if output: self.progressBar.setValue(20)
 
         crs = self.crsFormatLine.text()
-        print(crs)
 
         if output: self.progressBar.setValue(40)
 
